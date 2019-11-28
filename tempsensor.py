@@ -13,15 +13,17 @@ class TemperatureSensor:
             }
         return j
 
-
-    #def __init__(self,roomNumber,port=5556):
-    def __init__(self,roomNumber,socket):
+    def __init__(self,roomNumber,host,port):
         print('oi')
         #self.port = port
         self.topic = roomNumber
         #self.context = zmq.Context()
+        self.context = zmq.Context()
+        self.socket = self.context.socket(zmq.PUB)
+        #socket.bind("tcp://*:%d" % port)
+        self.socket.connect("tcp://%s:%d" % (host,port))
         #self.socket = self.context.socket(zmq.PUB)
-        self.socket = socket
+        #self.socket = socket
         self.roomtemp = random.randrange(200,280)/10     # temperatura inicial da sala
 
     def broadcastTemperature(self):
