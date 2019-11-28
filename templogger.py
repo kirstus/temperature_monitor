@@ -20,8 +20,6 @@ class TemperatureLogger:
 
         # Subscribe to room
         self.socket.setsockopt(zmq.SUBSCRIBE, str(self.topicfilter).encode()) # subscribe to a room
-        for i in range(1,8):
-            self.socket.setsockopt(zmq.SUBSCRIBE, str(i).encode()) # subscribe to a room
         print('subscribed')
 
     def logTemperature(self,N=10):
@@ -49,17 +47,19 @@ class TemperatureLogger:
     def logTemperatureForever(self,N=10):
         # Process N updates
         print('logging forever for room %d' % (self.topicfilter))
-        with open('roomtemp.log','w') as f:
-            while True:
-                #time.sleep(1)
-                totalValue = 0
-                for update_nbr in range (N):
-                    string = self.socket.recv()
-                    topic, temp, humidity, timerecv = string.split()
-                    totalValue += float(temp)
-                    #print(topic, temp, humidity, timerecv)
-                #print(totalValue/N)
-                #f.write('%s %.2f %f' % (self.topicfilter, totalValue, datetime.timestamp(datetime.now())))
-                print("Room: '%s' \tTemp: %.1fC \tTime: %.6f" % (self.topicfilter, totalValue / N,datetime.timestamp(datetime.now())))
-
+        while True:
+            #time.sleep(1)
+            total = 0
+            for i in range (N):
+                string = self.socket.recv()
+                topic, temp, humidity, timerecv = string.split()
+                total += float(temp)
+                #print(topic, temp, humidity, timerecv)
+            averageTemp = total/N
+            tempTuple = (self.topicfilter,"%.2f" % averageTemp,datetime.timestamp(datetime.now()))
+            #print(total/N)
+            #print(tempTuple)
+            self.ts.insert(tempTuple)
+            #f.write('%s %.2f %f' % (self.topicfilter, totalValue, datetime.timestamp(datetime.now())))
+            print("Room: '%s' \tTemp: %.1fC \tTime: %.6f" % (self.topicfilter, total / N,datetime.timestamp(datetime.now())))
 

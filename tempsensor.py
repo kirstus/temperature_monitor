@@ -24,6 +24,7 @@ class TemperatureSensor:
         self.socket.connect("tcp://%s:%d" % (host,port))
         #self.socket = self.context.socket(zmq.PUB)
         #self.socket = socket
+        #random.seed(str(self))
         self.roomtemp = random.randrange(200,280)/10     # temperatura inicial da sala
 
     def broadcastTemperature(self):

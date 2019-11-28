@@ -2,27 +2,39 @@ from templogger import TemperatureLogger
 import threading, time
 import lindatp
 
+class Receptor:
+    def __init__(self,host='localhost',port=5577):
+        self.ts = lindatp.lindatp()
+        self.threads = []
+        self.host = host
+        self.port = port
 
-def createReceptor(roomNumber,ts,host,port):
-    print('inicio thread %d' % roomNumber)
-    r = TemperatureLogger(roomNumber,ts,host,port)
-    r.logTemperatureForever()
+    def createReceptor(self,roomNumber,ts,host,port):
+        print('inicio thread %d' % roomNumber)
+        r = TemperatureLogger(roomNumber,ts,host,port)
+        r.logTemperatureForever()
 
-ts = lindatp.lindatp()
-recipientes = []
-threads = []
-host = 'localhost'
-port = 5577
-for i in range(0,9):
-    print(i)
-    print('before x')
-    x = threading.Thread(target=createReceptor, args=(i,ts,host,port), daemon=True)
-    print('before append')
-    threads.append(x)
-    print('before start')
-    x.start()
+    def createThreads(self,N=9):
+        for i in range(0,N):
+            print(i)
+            x = threading.Thread(target=self.createReceptor, args=(i,self.ts,self.host,self.port), daemon=True)
+            self.threads.append(x)
+            x.start()
 
-while True:
-    v = input()
-    if v == 'q':
-        break
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.ts.exit()
+
+    def exit(self):
+        self.ts.exit()
+
+if __name__=='__main__':
+    host = 'localhost'
+    port = 5577
+
+    rcp = Receptor(host,port)
+    rcp.createThreads()
+    while True:
+        v = input()
+        if v == 'q':
+            rcp.exit()
+
