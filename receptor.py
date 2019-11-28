@@ -8,11 +8,11 @@ class Receptor:
         self.threads = []
         self.host = host
         self.port = port
-        self.roomToWatch = roomToWatch
+        self.roomToWatch = roomToWatch if roomToWatch!='all' else True
 
     def createReceptor(self,roomNumber,ts,host,port):
         print('iniciando receptor %d' % roomNumber)
-        r = TemperatureLogger(roomNumber,ts,host,port,watch=(roomNumber==self.roomToWatch))
+        r = TemperatureLogger(roomNumber,ts,host,port,watch=(roomNumber==self.roomToWatch)or (self.roomToWatch==True))
         r.logTemperatureForever()
 
     def createThreads(self,N=9):
@@ -25,6 +25,8 @@ class Receptor:
     def startClient(self):
         self.c = visualClient.VisualClient(self.ts)
         print('iniciando cliente visual...')
+        if self.roomToWatch is True:
+            self.roomToWatch = 1
         self.c.start(self.roomToWatch)
 
     def __exit__(self, exc_type, exc_value, traceback):
@@ -40,7 +42,8 @@ if __name__=='__main__':
 
     if len(sys.argv) > 1:
         roomToWatch =  sys.argv[1]
-        roomToWatch = int(roomToWatch)
+        if roomToWatch != 'all':
+            roomToWatch = int(roomToWatch)
 
     if len(sys.argv) > 2:
         host =  sys.argv[2]
