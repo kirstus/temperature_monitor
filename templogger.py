@@ -1,6 +1,7 @@
 import sys
 import zmq, time
 from datetime import datetime
+from ast import literal_eval
 
 class TemperatureLogger:
     def __init__(self,roomNumber, ts, host='localhost',port=5577):
@@ -52,7 +53,17 @@ class TemperatureLogger:
             total = 0
             for i in range (N):
                 string = self.socket.recv()
-                topic, temp, humidity, timerecv = string.split()
+                print('recv: ',string)
+                d = literal_eval(string[2:].decode())
+                topic = d['sala']
+                temp = d['temperatura']
+                humidity = d['humidity']
+                timerecv = d['timestamp']
+                print('sala',topic, 'this thread',self.topicfilter)
+                print('temperature',temp)
+                print('time',timerecv)
+                print('humidity',humidity)
+                #topic, temp, humidity, timerecv = string.split()
                 total += float(temp)
                 #print(topic, temp, humidity, timerecv)
             averageTemp = total/N

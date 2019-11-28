@@ -1,5 +1,5 @@
 from templogger import TemperatureLogger
-import threading, time
+import threading, time, sys
 import lindatp
 
 class Receptor:
@@ -30,6 +30,13 @@ class Receptor:
 if __name__=='__main__':
     host = 'localhost'
     port = 5577
+
+    if len(sys.argv) > 1:
+        host =  sys.argv[1]
+
+    if len(sys.argv) > 2:
+        port =  sys.argv[2]
+        int(port1)
 
     rcp = Receptor(host,port)
     rcp.createThreads()
