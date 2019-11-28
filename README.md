@@ -43,5 +43,5 @@ The log for every room is kept in the file `./roomtemp.log`
 
 ## Dependencies
 
-- [matplotlib](https://matplotlib.org/)
-- [pyzmq](https://zeromq.org/languages/python/)
+- Matplotlib: [matplotlib](https://matplotlib.org/)
+- ZeroMQ(ØMQ): [pyzmq](https://zeromq.org/languages/python/)
