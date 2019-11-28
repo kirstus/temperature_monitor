@@ -3,7 +3,7 @@ import zmq, time
 from datetime import datetime
 
 class TemperatureLogger:
-    def __init__(self,roomNumber, ts, host='localhost',port=5556):
+    def __init__(self,roomNumber, ts, host='localhost',port=5577):
         print('inicio de ', roomNumber)
         self.host = host
         self.port = port
@@ -20,6 +20,8 @@ class TemperatureLogger:
 
         # Subscribe to room
         self.socket.setsockopt(zmq.SUBSCRIBE, str(self.topicfilter).encode()) # subscribe to a room
+        for i in range(1,8):
+            self.socket.setsockopt(zmq.SUBSCRIBE, str(i).encode()) # subscribe to a room
         print('subscribed')
 
     def logTemperature(self,N=10):
@@ -57,7 +59,7 @@ class TemperatureLogger:
                     totalValue += float(temp)
                     #print(topic, temp, humidity, timerecv)
                 #print(totalValue/N)
-                f.write('%s %.2f %f' % (self.topicfilter, totalValue, datetime.timestamp(datetime.now())))
-                if self.topicfilter == 6:
-                    print("Room: '%s' \tTemp: %.1fC \tTime: " % (self.topicfilter, totalValue / N),datetime.timestamp(datetime.now()))
+                #f.write('%s %.2f %f' % (self.topicfilter, totalValue, datetime.timestamp(datetime.now())))
+                print("Room: '%s' \tTemp: %.1fC \tTime: %.6f" % (self.topicfilter, totalValue / N,datetime.timestamp(datetime.now())))
+
 
