@@ -33,6 +33,7 @@ class Receptor:
         self.ts.exit()
 
     def exit(self):
+        print('exiting...')
         self.ts.exit()
 
 if __name__=='__main__':
@@ -60,4 +61,6 @@ if __name__=='__main__':
         v = input()
         if v == 'q':
             rcp.exit()
+            sys.exit()
+            break
 

@@ -46,6 +46,8 @@ class lindatp():
             self.insertnumbers(tuple(t))
 
     def insert(self, t):
+        if self.log.closed:
+            return None
         indice = self.tuplespace
         topic = t[0]
 
