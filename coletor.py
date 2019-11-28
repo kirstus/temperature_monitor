@@ -17,14 +17,11 @@ if len(sys.argv) > 2:
     port =  sys.argv[2]
     int(port)
 
-
 threads = []
 salas = []
 for i in range(0,9):
     x = threading.Thread(target=createSensor, args=(i,host,port), daemon=True)
-    print('before append')
     threads.append(x)
-    print('before start')
     x.start()
     #salas.append(TemperatureSensor(i,socket))
     #salas[i].broadcastTemperature()

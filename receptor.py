@@ -1,6 +1,6 @@
 from templogger import TemperatureLogger
 import threading, time, sys
-import lindatp
+import lindatp, visualClient
 
 class Receptor:
     def __init__(self,host='localhost',port=5577):
@@ -10,7 +10,7 @@ class Receptor:
         self.port = port
 
     def createReceptor(self,roomNumber,ts,host,port):
-        print('inicio thread %d' % roomNumber)
+        print('iniciando receptor %d' % roomNumber)
         r = TemperatureLogger(roomNumber,ts,host,port)
         r.logTemperatureForever()
 
@@ -20,6 +20,11 @@ class Receptor:
             x = threading.Thread(target=self.createReceptor, args=(i,self.ts,self.host,self.port), daemon=True)
             self.threads.append(x)
             x.start()
+
+    def startClient(self):
+        self.c = visualClient.VisualClient(self.ts)
+        print('iniciando cliente visual...')
+        self.c.start(1)
 
     def __exit__(self, exc_type, exc_value, traceback):
         self.ts.exit()
@@ -40,6 +45,8 @@ if __name__=='__main__':
 
     rcp = Receptor(host,port)
     rcp.createThreads()
+    time.sleep(3)
+    rcp.startClient()
     while True:
         v = input()
         if v == 'q':

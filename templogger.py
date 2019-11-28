@@ -5,7 +5,7 @@ from ast import literal_eval
 
 class TemperatureLogger:
     def __init__(self,roomNumber, ts, host='localhost',port=5577):
-        print('inicio de ', roomNumber)
+        #print('inicio de ', roomNumber)
         self.host = host
         self.port = port
         self.topicfilter = roomNumber
@@ -21,10 +21,10 @@ class TemperatureLogger:
 
         # Subscribe to room
         self.socket.setsockopt(zmq.SUBSCRIBE, str(self.topicfilter).encode()) # subscribe to a room
-        print('subscribed')
+        #print('subscribed')
 
     def logTemperature(self,N=10):
-        print('logging')
+        #print('logging')
         # Process N updates
         total_value = 0
         string = ''
@@ -53,16 +53,16 @@ class TemperatureLogger:
             total = 0
             for i in range (N):
                 string = self.socket.recv()
-                print('recv: ',string)
+                #print('recv: ',string)
                 d = literal_eval(string[2:].decode())
                 topic = d['sala']
                 temp = d['temperatura']
                 humidity = d['humidity']
                 timerecv = d['timestamp']
-                print('sala',topic, 'this thread',self.topicfilter)
-                print('temperature',temp)
-                print('time',timerecv)
-                print('humidity',humidity)
+                #print('sala',topic, 'this thread',self.topicfilter)
+                #print('temperature',temp)
+                #print('time',timerecv)
+                #print('humidity',humidity)
                 #topic, temp, humidity, timerecv = string.split()
                 total += float(temp)
                 #print(topic, temp, humidity, timerecv)
@@ -72,5 +72,6 @@ class TemperatureLogger:
             #print(tempTuple)
             self.ts.insert(tempTuple)
             #f.write('%s %.2f %f' % (self.topicfilter, totalValue, datetime.timestamp(datetime.now())))
-            print("Room: '%s' \tTemp: %.1fC \tTime: %.6f" % (self.topicfilter, total / N,datetime.timestamp(datetime.now())))
+            if self.topicfilter == 1:
+                print("Room: '%s' \tAvg temp: %.1fC \tTime: %.6f" % (self.topicfilter, total / N,datetime.timestamp(datetime.now())))
 

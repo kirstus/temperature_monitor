@@ -13,14 +13,7 @@ class TemperatureSensor:
             }
         return j
 
-    def pack(self,t):
-        data = ''
-        for elem in t:
-            data += str(elem) + '\n,'
-        return data[:-2]
-
     def __init__(self,roomNumber,host,port):
-        print('oi')
         #self.port = port
         self.topic = roomNumber
         #self.context = zmq.Context()
@@ -50,11 +43,10 @@ class TemperatureSensor:
             self.humidity = random.randrange(600,920)/10
             t += 1
             self.a = self.toJSON([self.topic,self.roomtemp,self.humidity,t])
-            print('json',self.a)
-            print('strjson', str(self.a))
+            print( str(self.a))
             sj = str(self.topic)+' '+str(self.a)
-            print("%d %f" % (self.topic,self.roomtemp))
+            #print("%d %f" % (self.topic,self.roomtemp))
             #self.socket.send("%d %f %d %d".encode('ascii') % (self.topic,self.roomtemp,self.humidity,t))
             self.socket.send(sj.encode('ascii') )
             #socket.send("%d %d" % (topic, messagedata))
-            time.sleep(1)
+            time.sleep(0.1)
