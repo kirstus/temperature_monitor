@@ -4,12 +4,13 @@ from datetime import datetime
 from ast import literal_eval
 
 class TemperatureLogger:
-    def __init__(self,roomNumber, ts, host='localhost',port=5577):
+    def __init__(self,roomNumber, ts, host='localhost',port=5577,watch=False):
         #print('inicio de ', roomNumber)
         self.host = host
         self.port = port
         self.topicfilter = roomNumber
         self.ts = ts
+        self.watch = watch
 
         # Socket to talk to server
         self.context = zmq.Context()
@@ -72,6 +73,6 @@ class TemperatureLogger:
             #print(tempTuple)
             self.ts.insert(tempTuple)
             #f.write('%s %.2f %f' % (self.topicfilter, totalValue, datetime.timestamp(datetime.now())))
-            if self.topicfilter == 1:
+            if self.watch:
                 print("Room: '%s' \tAvg temp: %.1fC \tTime: %.6f" % (self.topicfilter, total / N,datetime.timestamp(datetime.now())))
 
